@@ -1,28 +1,24 @@
 import os
 import asyncio
 from telethon import TelegramClient
-# Récupération des secrets GitHub
+
+# Récupération des secrets
 api_id = os.environ['TG_API_ID']
 api_hash = os.environ['TG_API_HASH']
 bot_token = os.environ['TG_BOT_TOKEN']
 chat_id = int(os.environ['TG_CHAT_ID'])
-file_path = "video.mp4"
-async def main():
-# Utilise le bot token pour s'authentifier via Telethon
-async with TelegramClient('bot_session', api_id,
-api_hash).start(bot_token=bot_token) as client:
-print(f"Début de l'envoi de {file_path}...")
-await client.send_file(
-1.
-2.
-3.
 
-chat_id,
-file_path,
-caption="Enregistrement terminé",
-supports_streaming=True # Permet de lire la vidéo avant la fin
-du téléchargement
-)
-print("Envoi réussi !")
+async def main():
+    # Connexion et envoi
+    async with TelegramClient('bot_session', api_id, api_hash).start(bot_token=bot_token) as client:
+        print("Envoi en cours vers Telegram...")
+        await client.send_file(
+            chat_id, 
+            "video.mp4", 
+            caption="Enregistrement terminé !",
+            supports_streaming=True
+        )
+        print("Fichier envoyé avec succès.")
+
 if __name__ == "__main__":
-asyncio.run(main())
+    asyncio.run(main())
