@@ -5,11 +5,11 @@ on:
       username:
         description: 'Nom du modèle'
         required: true
-        default: 'neotrix33'
+        default: 'anjelo79'
       duration:
         description: 'Durée en secondes'
         required: true
-        default: '60'
+        default: '7200'
 
 jobs:
   run_recorder:
@@ -22,12 +22,16 @@ jobs:
           pip install telethon yt-dlp
           sudo apt update && sudo apt install -y ffmpeg
 
-      - name: Record
+      - name: Record and Upload
         run: |
+          # On lance le script d'upload en arrière-plan
+          python upload.py & 
+          
+          # On lance l'enregistrement avec segmentation
           yt-dlp "https://www.cam4.com/${{ github.event.inputs.username }}" \
           --downloader ffmpeg \
-          --downloader-args "ffmpeg:-t ${{ github.event.inputs.duration }} -fs 1900M -c copy" \
-          -o "video.mp4"
+          --downloader-args "ffmpeg:-t ${{ github.event.inputs.duration }} -fs 1900M" \
+          -o "%(uploader)s_%(os_str)s_%(date)s_%(time)s.%(ext)s"
 
       - name: Upload to Telegram
         env:
