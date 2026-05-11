@@ -1,0 +1,33 @@
+name: Cam4 to Telegram 2GB
+on:
+workflow_dispatch:
+inputs:
+username:
+default: 'nicolas1904'
+duration:
+description: 'Secondes'
+default: '3600'
+jobs:
+run:
+runs-on: ubuntu-latest
+steps:
+- uses: actions/checkout@v4
+- name: Install
+run: |
+pip install telethon yt-dlp
+sudo apt install ffmpeg
+- name: Record
+run: |
+# -fs 1900M coupe l'enregistrement si le fichier atteint 1.9 Go
+yt-dlp "https://www.cam4.com/$
+{{ github.event.inputs.username }}" --downloader ffmpeg
+--downloader-args "ffmpeg:-t ${{ github.event.inputs.duration }} -fs 1900M
+
+-c copy" -o "video.mp4"
+- name: Upload to Telegram
+env:
+TG_API_ID: ${{ secrets.TG_API_ID }}
+TG_API_HASH: ${{ secrets.TG_API_HASH }}
+TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+run: python upload.py
